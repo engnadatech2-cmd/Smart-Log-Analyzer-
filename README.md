@@ -172,7 +172,13 @@ curl http://localhost:8000/health
 ```
 
 ---
+## 🖥️ Screenshots
 
+### Dashboard
+![Smart Log Analyzer Dashboard](assets/dashboard.png)
+
+### REST API
+![FastAPI Swagger UI](assets/api.png)
 ## Running Tests
 
 ```bash
