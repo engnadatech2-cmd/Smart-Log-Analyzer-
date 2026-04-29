@@ -1,0 +1,86 @@
+# Smart Log Analyzer — Application Configuration
+# All durations are in the units noted inline.
+# Booleans use YAML native true/false.
+
+# Path to the log file to monitor (absolute or relative)
+log_file: "test.log"
+
+# ── Watcher ──────────────────────────────────────────────────────────────────
+watcher:
+  # How often to check the file for new data (milliseconds)
+  poll_interval_ms: 100
+  # Maximum sleep between retries when the log file is absent (seconds)
+  retry_backoff_max_s: 30
+
+# ── Rolling Statistics ────────────────────────────────────────────────────────
+stats:
+  # Size of the rolling time window used for all metrics
+  window_minutes: 5
+  # Hard cap on the number of entries held in memory at one time
+  max_entries: 10000
+
+# ── Anomaly Detection ─────────────────────────────────────────────────────────
+anomaly:
+  # Number of historical readings retained for baseline computation
+  window_size: 60
+  # Z-score magnitude above which a reading is flagged as anomalous
+  threshold_z: 3.0
+
+# ── REST API ──────────────────────────────────────────────────────────────────
+api:
+  host: "0.0.0.0"
+  port: 8000
+
+# ── Dashboard ─────────────────────────────────────────────────────────────────
+dashboard:
+  # Number of times per second the Rich Live display is refreshed
+  refresh_per_second: 2
+
+# ── Alert Rules ───────────────────────────────────────────────────────────────
+# Each rule specifies a metric key (from StatsSummary), a numeric threshold,
+# a severity level, and a cooldown period in seconds.
+alert_rules:
+  - name: "High Error Rate"
+    metric: "error_rate_rpm"
+    threshold: 10.0
+    severity: "critical"
+    cooldown_s: 60
+
+  - name: "Elevated Error Rate"
+    metric: "error_rate_rpm"
+    threshold: 5.0
+    severity: "warning"
+    cooldown_s: 120
+
+  - name: "High Total Entries"
+    metric: "total_entries"
+    threshold: 5000
+    severity: "warning"
+    cooldown_s: 300
+
+# ── Notifications ─────────────────────────────────────────────────────────────
+notifications:
+  # Print alerts to the terminal using Rich coloured output
+  console: true
+
+  slack:
+    enabled: false
+    # Paste your Slack App incoming webhook URL here
+    webhook_url: ""
+
+  webhook:
+    enabled: false
+    # Generic HTTP endpoint; AlertEvent is POSTed as JSON
+    url: ""
+    # Optional extra HTTP headers (e.g. Authorization tokens)
+    headers: {}
+
+# ── Export ────────────────────────────────────────────────────────────────────
+export:
+  enabled: false
+  # Directory where export files will be written
+  output_dir: "./exports"
+  # "json" produces newline-delimited JSON; "csv" produces RFC 4180 CSV
+  format: "json"
+  # How often to flush an export file (minutes)
+  interval_minutes: 10
